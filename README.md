@@ -48,7 +48,7 @@ rather than emitting strings. Further, *Chapter 9* has examples with code
 that might be produced by backpatching - that's a variant to be explored
 separately.
 
-## Package parser
+## Package `parser`
 
 At one point, I had the parser and lexer in one package, called `syntax`.
 The parser is kept separate for readability. We can present the lexer
