@@ -13,6 +13,8 @@ public class Lexer {
       reserve( new Word("while", Tag.WHILE) );
       reserve( new Word("do",    Tag.DO)    );
       reserve( new Word("break", Tag.BREAK) );
+      reserve( new Word("label", Tag.LABEL) );
+      reserve( new Word("goto",  Tag.GOTO)  );
 
       reserve( Word.True );  reserve( Word.False );
 

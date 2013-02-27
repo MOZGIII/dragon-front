@@ -102,6 +102,14 @@ public class Parser {
       case Tag.BREAK:
          match(Tag.BREAK); match(';');
          return new Break();
+         
+      case Tab.LABEL:
+	     Label labelnode = new Label();
+	     match(Tag.LABEL); Token t = look; match(Tag.ID); match(';');
+	     Id id = top.labelAdd(t);
+	     if( id == null ) error(t.toString() + " label already defined");
+	     labelnode.init(id);
+	     return labelnode;
 
       case '{':
          return block();
