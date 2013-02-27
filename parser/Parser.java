@@ -7,12 +7,13 @@ public class Parser {
    private Token look;   // lookahead tagen
    Env top = null;       // current or top symbol table
    int used = 0;         // storage used for declarations
+   LabelStorage labels = new LabelStorage(); // used to store labels
 
    public Parser(Lexer l) throws IOException { lex = l; move(); }
 
    void move() throws IOException { look = lex.scan(); }
 
-   void error(String s) { throw new Error("near line "+lex.line+": "+s); }
+   void error(String s) { throw new Error("near line "+Lexer.line+": "+s); }
 
    void match(int t) throws IOException {
       if( look.tag == t ) move();
@@ -103,13 +104,11 @@ public class Parser {
          match(Tag.BREAK); match(';');
          return new Break();
          
-      case Tab.LABEL:
-	     Label labelnode = new Label();
-	     match(Tag.LABEL); Token t = look; match(Tag.ID); match(';');
-	     Id id = top.labelAdd(t);
-	     if( id == null ) error(t.toString() + " label already defined");
-	     labelnode.init(id);
-	     return labelnode;
+      case Tag.LABEL:
+         return label_();
+
+      case Tag.GOTO:
+         return goto_();
 
       case '{':
          return block();
@@ -117,6 +116,45 @@ public class Parser {
       default:
          return assign();
       }
+   }
+
+   Label label_() throws IOException {
+      Label labelnode = new Label();
+
+      // Parse the code
+      match(Tag.LABEL); Token tok = look; match(Tag.ID); match(';');
+      
+      // Get or create a label - create new as usial or get invalid for initialization
+      LabelId labelid = labels.getOrCreate((Word)tok);
+
+      // If the label is not invalid then it has already been initialized
+      if( labelid.location != LabelId.INVALID ) error(tok.toString() + " label already defined");
+
+      // If not, we initialize it in here
+      labelnode.init(labelid);
+
+      // Return the value
+      return labelnode;
+   }
+
+   Goto goto_() throws IOException {
+      Goto gotonode = new Goto();
+
+      // Parse the code
+      match(Tag.GOTO); Token tok = look; match(Tag.ID); match(';');
+      
+      // Get or create a label here
+      // If we `get` a token then everything works well
+      // If we create it then we leave it invalid for deferred init
+      LabelId labelid = labels.getOrCreate((Word)tok);
+
+      // No check required in here - see Goto.gen()
+      // if( labelid == null ) error(tok.toString() + " label not found");
+
+      // Attach labelid to goto node
+      gotonode.init(labelid);
+
+      return gotonode;
    }
 
    Stmt assign() throws IOException {

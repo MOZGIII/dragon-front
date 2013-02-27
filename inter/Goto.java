@@ -3,17 +3,18 @@ import symbols.*;
 
 public class Goto extends Stmt {
 
-   Expr expr; Stmt stmt;
+   Expr expr;
 
-   public Goto() { expr = null; stmt = null; }
+   public Goto() { expr = null; }
 
-   public void init(Label x, Stmt s) {
-      expr = x;  stmt = s;
-      if( expr.type != Type.LabelId ) expr.error("boolean required in while");
+   public void init(Expr x) {
+      expr = x;
+      // if( expr.type != Type.LabelId ) expr.error("label required in goto");
    }
    public void gen(int b, int a) {
-      int label = newlabel();   // label for stmt
-      emitlabel(label); stmt.gen(label, b);
-      emit("goto L" + expr.location);
+      if(((LabelId)expr).location == LabelId.INVALID)
+         error(expr.toString() + " label is undefined");
+
+      emit("goto L" + ((LabelId)expr).location);
    }
 }

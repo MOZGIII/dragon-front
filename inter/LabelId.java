@@ -3,9 +3,18 @@ import lexer.*; import symbols.*;
 
 public class LabelId extends Expr {
 
-	public int offset;     // relative address
+   public int location; // real label position
 
-	public LabelId(Word id, int p, int b) { super(id, p); offset = b; }
+   public LabelId(Word id) { super(id, null); location = INVALID; }
 
-//	public String toString() {return "" + op.toString() + offset;}
+   public static int INVALID = -1;
+
+   public boolean deferredInit(int newLocation) {
+    // Only allow for invalid labels
+    if(location == INVALID) {
+      location = newLocation;
+      return true;
+    }
+    return false;
+  }
 }
