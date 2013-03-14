@@ -3,19 +3,23 @@ import symbols.*;
 
 public class Label extends Stmt {
 
-   Expr expr;
+   LabelId expr;
 
    public Label() { expr = null;}
 
    public void init(Expr x) {
-      expr = x;
-      // if( expr.type != Type.LabelId ) expr.error("valid label name required in label");
+      expr = (LabelId) x;
    }
 
    public void gen(int b, int a) {
-      //int label = newlabel();
-      ((LabelId)expr).deferredInit(b);
-      //emitlabel(label);
-      emit("goto L" + a + " # label debug");
+      expr.deferredInit(b); // init label with current position
+      
+      // If label was initialized previously, emit it's location which does not match statement's location
+      if(b != expr.location) {
+         emit("NOOP # forward label");
+         emitlabel(expr.location);
+      }
+
+      emit("NOOP # label \"" + expr + "\"");
    }
 }
