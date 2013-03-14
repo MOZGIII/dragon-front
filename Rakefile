@@ -12,6 +12,7 @@ end
 
 desc "Tests all the test cases"
 task :test do
+  mkdir_p "tmp"
   Dir["tests/*.t"].each do |test_file|
     filename = File.basename(test_file, ".t")
     puts "====== " + filename + " ======"
