@@ -3,10 +3,10 @@ import java.util.*; import lexer.*; import inter.*;
 
 public class Env {
 
-	private Hashtable table;
+	private Hashtable<Token, Id> table;
 	protected Env prev;
 
-	public Env(Env n) { table = new Hashtable(); prev = n; }
+	public Env(Env n) { table = new Hashtable<Token, Id>(); prev = n; }
 
 	public void put(Token w, Id i) { table.put(w, i); }
 

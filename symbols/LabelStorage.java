@@ -3,9 +3,9 @@ import java.util.*; import lexer.*; import inter.*;
 
 public class LabelStorage {
 
-  private Hashtable table;
+  private Hashtable<Word, LabelId> table;
 
-  public LabelStorage() { table = new Hashtable(); }
+  public LabelStorage() { table = new Hashtable<Word, LabelId>(); }
 
   public boolean put(Word w, LabelId i) { return table.put(w, i) == null; }
 
