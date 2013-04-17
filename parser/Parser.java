@@ -126,10 +126,7 @@ public class Parser {
       
       // Get or create a label - create new as usial or get invalid for initialization
       LabelId labelid = labels.getOrCreate((Word)tok);
-
-      // If the label is not invalid then it has already been initialized
-      if( labelid.location != LabelId.INVALID ) error(tok.toString() + " label already defined");
-
+      
       // If not, we initialize it in here
       labelnode.init(labelid);
 
